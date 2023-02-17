@@ -1,13 +1,11 @@
+import java.util.HashMap;
+
 public class Letters {
-    static Letter[] letterList;
+    HashMap<Integer, Character> letters = new HashMap<Integer, Character>();
 
-    public Letters(char[] letters) {
-        Letters.letterList = new Letter[letters.length];
-
-        for (int i = 0; i < letterList.length; i++) {
-            letterList[i] = new Letter(letters[i], i);
-            //System.out.print(letterList[i].getChar() + " ");
-            //System.out.println(letterList[i].getPrio());
+    public Letters(char[] inLetters) {
+        for(int i = 0; i > inLetters.length; i++){
+            this.letters.put(i, inLetters[i]);
         }
     }
 
@@ -16,14 +14,12 @@ public class Letters {
         int token2 = 1;
         int token3 = 2;
 
+        System.out.println(letters.get(0) + letters.get(1) + letters.get(2));
+
         String sidesToSwap = "front";
 
         for(int i = 0; i < 6; i++){
-            System.out.println(
-                letterList[token1].getChar() + 
-                letterList[token2].getChar() + 
-                letterList[token3].getChar()
-            );
+            //System.out.println(letters[token1] + letters[token2] + letters[token3]);
 
             switch (sidesToSwap){
                 case "front" -> swapInt(token1, token2);
@@ -34,14 +30,14 @@ public class Letters {
         }
     }
 
-    public void flipSidesToSwap(String in) {
+    private void flipSidesToSwap(String in) {
         switch (in){
             case "front" -> in = "back";
             case "back" -> in = "front"; 
         }
     }
 
-    public static void swapInt(int i1, int i2) {
+    private static void swapInt(int i1, int i2) {
         int temp = i1;
         i1 = i2;
         i2 = temp;
