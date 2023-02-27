@@ -1,24 +1,41 @@
+//I fucking hate this dude
+//current plan is make it contain different combinations of 3, cause 3 is something I can make an algorithm for
+
+
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        char[] characters = getInput();
+  static char[][] output;
+
+  public static void main(String[] args) {
+    String input = getInput();
+    char[][] output = new char[calDigits(input)][input.length()];
+
+    for(int i = 0; i < input.length(); i++){
+      if(input.length() > 3){
+        // output
+      }
     }
+  }
 
-    private static char[] getInput(){
-        System.out.println("Write your word or combination of characters of choice:");
-        Scanner in = new Scanner(System.in);
-        String input;
-        
-        input = in.next();
-        in.close();
+  private static String getInput() {
+    System.out.println("Write your word or combination of characters of choice:");
+    Scanner in = new Scanner(System.in);
+    String input;
 
-        char[] output = input.toCharArray();
+    input = in.next();
+    in.close();
 
-        return output;
+    //char[] output = input.toCharArray();
+
+    return input;
+  }
+
+  private static int calDigits(String in){
+    int out = 1;
+    for(int i = 1; i <= in.length(); i++){
+      out = out * i;
     }
-
-    private void printCombinations(){
-
-    }
+    return out;
+  }
 }
