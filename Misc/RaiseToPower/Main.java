@@ -2,7 +2,7 @@
 //Calculate the powers of 2 table from 1 to 10 using a nested for loop where you
 // multiply 2 with itself the given number of times. 
 
-package bruh2.RaiseToPower;
+package Misc.RaiseToPower;
 
 import java.lang.Math;
 

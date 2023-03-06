@@ -2,7 +2,7 @@
 // create an ArrayList <Integer> and add the numbers from 1 to 10 using a loop, 
 // reverse the list using a for or while loop, and print the elements from last to first.
 
-package bruh2.ReverseArrPrint;
+package Misc.ReverseArrPrint;
 
 import java.util.ArrayList;
 

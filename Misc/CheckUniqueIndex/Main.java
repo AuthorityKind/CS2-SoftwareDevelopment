@@ -1,8 +1,7 @@
+package Misc.CheckUniqueIndex;
 //Assignment:
 //Write a method that takes an array of int and returns true if the numbers are all
 // different and false if a number appears more than once.
-
-package bruh2.CheckUniqueIndex;
 
 public class Main {
     static int[] list;
