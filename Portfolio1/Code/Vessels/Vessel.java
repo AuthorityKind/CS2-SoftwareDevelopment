@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import Portfolio1.Code.Cargo.Cargo;
 
 public abstract class Vessel {
-    public String name;
+    public static String name;
     public static String type;
-    public ArrayList<Cargo> cargoHold;
+    public ArrayList<Cargo> cargoHold = new ArrayList<Cargo>();
 
     public Vessel(String inName, String inType){
         name = inName;
@@ -25,5 +25,7 @@ public abstract class Vessel {
         return cargoHold;
     }
 
-    abstract public void addCargo();
+    public void addCargo(Cargo cargo){
+        cargoHold.add(cargo);
+    };
 }

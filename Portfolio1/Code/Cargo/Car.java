@@ -1,18 +1,18 @@
 package Portfolio1.Code.Cargo;
 
 public class Car extends Cargo{
-    public static byte lane;
+    public static short lane;
 
-    public Car(String inName, byte inLane) {
+    public Car(String inName, short inLane) {
         super(inName, "Car", "Meters", 8);
         lane = inLane;
     }
 
-    public byte getLane(){
+    public short getLane(){
         return lane;
     }
 
-    public static void setLane(byte newLane){
+    public static void setLane(short newLane){
         lane = newLane;
     }
 }

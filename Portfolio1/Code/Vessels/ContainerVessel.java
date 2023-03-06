@@ -8,11 +8,6 @@ public class ContainerVessel extends Vessel{
         capacity = inCapacity;
     }
 
-    @Override
-    public void addCargo() {
-       
-    } 
-
     public boolean checkCapacity(){
         return getCapacity() > 0;
     }

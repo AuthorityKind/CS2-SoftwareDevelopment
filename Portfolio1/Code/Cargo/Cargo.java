@@ -2,7 +2,7 @@ package Portfolio1.Code.Cargo;
 
 public abstract class Cargo {
     public String measurement;
-    public int size;
+    public static int size;
     public String name;
     public String type;
 
@@ -21,7 +21,7 @@ public abstract class Cargo {
         return type;
     }
 
-    public int getSize(){
+    public static int getSize(){
         return size;
     }
 
