@@ -13,21 +13,24 @@ import Portfolio1.Code.Cargo.Container;
 public class Main {
     static ArrayList<Vessel> vessels = new ArrayList<Vessel>();
 
-    final static ContainerVessel test2 = new ContainerVessel("Test2", 40);
-    final static RoRo test1 = new RoRo("Test1", (byte) 12, (short) 100);
+    final static ContainerVessel conVes1 = new ContainerVessel("Container Vessel 1", 40);
+    static ContainerVessel conVes2 = new ContainerVessel("Container Vessel 2", 20);
+    
+    final static RoRo roro1 = new RoRo("Roro 1", (byte) 12, (short) 100);
 
     public static void main(String[] args) {
-        vessels.add(test2);
-        vessels.add(test1);
+        vessels.add(conVes1);
+        vessels.add(conVes2);
+        vessels.add(roro1);
 
-        Car car1 = test1.createVehicle("car1");
-        test1.addCargo(car1);    
+        Car car1 = roro1.createVehicle("car1");
+        roro1.addCargo(car1);    
         
-        Container con1 = test2.createContainer("con1");
-        test2.addCargo(con1);
+        Container con1 = conVes1.createContainer("con1");
+        conVes1.addCargo(con1);
 
-        System.out.println(test1.getName());
-        System.out.println(test2.getName());
+        Container con2 = conVes2.createContainer("con2");
+        conVes2.addCargo(con2);
 
         printVessels();
     }
