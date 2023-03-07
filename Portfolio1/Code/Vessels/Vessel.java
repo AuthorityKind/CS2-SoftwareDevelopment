@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import Portfolio1.Code.Cargo.Cargo;
 
 public abstract class Vessel {
-    public static String name;
-    public static String type;
+    protected static String name;
+    protected static String type;
     public ArrayList<Cargo> cargoHold = new ArrayList<Cargo>();
 
+    /* 
     public Vessel(String inName, String inType){
         name = inName;
         type = inType;
     }
-
+    */
     public String getName() {
         return name;
     }

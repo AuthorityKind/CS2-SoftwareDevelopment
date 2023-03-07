@@ -8,7 +8,8 @@ public class RoRo extends Vessel{
     public short laneLength;
     
     public RoRo(String inName, byte lanesNum, short inLaneLength) {
-        super(inName, "RoRo");
+        name = inName;
+        type = "RoRo";
         lanes = new short[lanesNum];
         laneLength = inLaneLength;
     }
@@ -42,11 +43,11 @@ public class RoRo extends Vessel{
         return truck;
     }
 
-    private boolean checkLaneSpace(short lane, int newVehicleLength){
+    public boolean checkLaneSpace(short lane, int newVehicleLength){
         return getRemainingLaneSpace(lane) >= newVehicleLength;
     }
 
-    private int getRemainingLaneSpace(short lane){
+    public int getRemainingLaneSpace(short lane){
         return laneLength - lanes[lane];
     }
 }

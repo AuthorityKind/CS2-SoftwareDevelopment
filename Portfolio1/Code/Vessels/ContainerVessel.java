@@ -1,11 +1,19 @@
 package Portfolio1.Code.Vessels;
 
+import Portfolio1.Code.Cargo.Container;
+
 public class ContainerVessel extends Vessel{
     public static int capacity;
 
     public ContainerVessel(String inName, int inCapacity) {
-        super(inName, "Container Vessel");
+        name = inName;
+        type = "Container Vessel";
         capacity = inCapacity;
+    }
+
+    public Container createContainer(String inName) {
+        Container container = new Container(inName);
+        return container;
     }
 
     public boolean checkCapacity(){
