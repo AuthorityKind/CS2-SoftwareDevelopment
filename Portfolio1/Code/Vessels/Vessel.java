@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import Portfolio1.Code.Cargo.Cargo;
 
 public abstract class Vessel {
-    protected static String name;
-    protected static String type;
+    protected String name;
+    protected String type;
     public ArrayList<Cargo> cargoHold = new ArrayList<Cargo>();
 
     /* 
