@@ -8,12 +8,6 @@ public abstract class Vessel {
     protected String type;
     public ArrayList<Cargo> cargoHold = new ArrayList<Cargo>();
 
-    /* 
-    public Vessel(String inName, String inType){
-        name = inName;
-        type = inType;
-    }
-    */
     public String getName() {
         return name;
     }
