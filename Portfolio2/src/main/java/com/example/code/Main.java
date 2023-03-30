@@ -1,26 +1,28 @@
 package com.example.code;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 public class Main extends Application {
+
+
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) {
         final double labelWidth = 70;
 
         //From Port
         Label fromPortText = new Label("From Port");
         fromPortText.setPrefWidth(labelWidth);
 
-        ComboBox fromPortBox = new ComboBox();
+        ComboBox<String> fromPortBox = new ComboBox<String>();
         fromPortBox.getItems().add("Esbjerg");
         fromPortBox.getItems().add("Aalborg");
         fromPortBox.getItems().add("København");
@@ -31,7 +33,7 @@ public class Main extends Application {
         Label toPortText = new Label("To Port");
         toPortText.setPrefWidth(labelWidth);
 
-        ComboBox toPortBox = new ComboBox();
+        ComboBox<String> toPortBox = new ComboBox<>();
         toPortBox.getItems().add("Esbjerg");
         toPortBox.getItems().add("Aalborg");
         toPortBox.getItems().add("København");
@@ -78,6 +80,8 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+        //launch();
+        DB testDB = new DB();
+        testDB.dudeidk();
     }
 }
