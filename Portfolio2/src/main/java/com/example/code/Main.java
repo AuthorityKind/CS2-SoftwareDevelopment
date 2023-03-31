@@ -9,11 +9,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 public class Main extends Application {
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) {
         final double labelWidth = 70;
 
         //From Port
@@ -78,6 +76,8 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+        //launch();
+        DB db = new DB();
+        db.dudeidk();
     }
 }
