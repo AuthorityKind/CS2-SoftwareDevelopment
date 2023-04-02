@@ -1,76 +1,31 @@
 package code.example.code;
 
 import javafx.application.Application;
-
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class Main extends Application {
-     public DB db = new DB();
-    final double labelWidth = 140;
-    final double labelTitleHeight = 70;
+import java.util.ArrayList;
 
-    Label departLabel = new Label("Departure");
-    Label departLocalLabel = new Label("Location");
-    ComboBox<String> departLocalBox = new ComboBox<>();
+public class Main extends Application{
 
-    Label text = new Label();
+    DB db = new DB();
+
+    Section departure = new Section("Departure");
+    Section arrival = new Section("Arrival");
+
+    String[] chosenElements = new String[4];
+    Label text;
+    Label voyages = new Label();
 
     @Override
     public void start(Stage stage) {
-        text = new Label("");
-
-        //DEPARTURE
-        departLabel.setPrefWidth(labelWidth);
-        departLabel.setPrefHeight(labelTitleHeight);
-
-
-        for(String s: db.localArr){
-            departLocalBox.getItems().add(s);
-        }
-        VBox departLocalHBox = new VBox(departLocalLabel,departLocalBox);
-
-        Label departDateLabel = new Label("Date");
-        ComboBox<String> departDateBox = new ComboBox<>();
-        for(Integer i: db.startDateArr){
-            departDateBox.getItems().add(db.parseDate(i));
-        }
-        VBox departDateHBox = new VBox(departDateLabel, departDateBox);
-
-        HBox departContent = new HBox(departDateHBox, departLocalHBox);
-        VBox departHBox = new VBox(departLabel, departContent);
-
-        //ARRIVAL
-        Label arrivalLabel = new Label("Arrival");
-        arrivalLabel.setPrefWidth(labelWidth);
-        arrivalLabel.setPrefHeight(labelTitleHeight);
-
-        Label arrivalLocalLabel = new Label("Location");
-        ComboBox<String> arrivalLocalBox = new ComboBox<>();
-        for(String s: db.localArr){
-            arrivalLocalBox.getItems().add(s);
-        }
-        VBox arrivalLocalHBox = new VBox(arrivalLocalLabel,arrivalLocalBox);
-
-        Label arrivalDateLabel = new Label("Date");
-        ComboBox<String> arrivalDateBox = new ComboBox<>();
-        for(Integer i: db.startDateArr){
-            arrivalDateBox.getItems().add(db.parseDate(i));
-        }
-        VBox arrivalDateHBox = new VBox(arrivalDateLabel, arrivalDateBox);
-
-        HBox arrivalContent = new HBox(arrivalDateHBox, arrivalLocalHBox);
-        VBox arrivalHBox = new VBox(arrivalLabel, arrivalContent);
 
         /*
         //Volume
@@ -81,25 +36,31 @@ public class Main extends Application {
          */
 
         //TextArea
-
-        text.prefWidth(100);
+        text = new Label();
+        text.prefWidth(200);
 
         //SEARCH BUTTON
         Button searchButton = new Button("Search");
         searchButton.prefHeight(100);
-
-        EventHandler<ActionEvent> event = actionEvent -> {
-            text.setText("Start Location: " + departLocalBox.getValue());
+        EventHandler<ActionEvent> searchEvent = actionEvent -> {
+            displayChosenElements();
         };
+        searchButton.setOnAction(searchEvent);
 
-        searchButton.setOnAction(event);
+        //COMMIT BUTTON
+        Button commitButton = new Button("Commit");
+        commitButton.prefHeight(100);
+        EventHandler<ActionEvent> commitEvent = actionEvent -> {
+            displayVoyages();
+        };
+        commitButton.setOnAction(commitEvent);
 
         //the rest
-        VBox left = new VBox(departHBox, arrivalHBox, searchButton);
-
+        VBox left = new VBox(departure.fullVBox, arrival.fullVBox, searchButton);
+        VBox right = new VBox(text, commitButton, voyages);
         BorderPane root = new BorderPane();
         root.setLeft(left);
-        root.setRight(text);
+        root.setRight(right);
 
         Scene scene = new Scene(root, 500, 500);
 
@@ -108,7 +69,79 @@ public class Main extends Application {
         stage.show();
     }
 
+    public void displayChosenElements() {
+        String str = "Chosen Elements:" +
+                "\nDeparture Location: " + displayElement(departure.localComboBox) +
+                "\nDeparture Date: " + displayElement(departure.dateComboBox) +
+                "\nArrival Location: " + displayElement(arrival.localComboBox) +
+                "\nArrival Date: " + displayElement(arrival.dateComboBox);
+
+        addElement(departure.localComboBox, 0);
+        addElement(departure.dateComboBox, 1);
+        addElement(arrival.localComboBox, 2);
+        addElement(arrival.dateComboBox, 3);
+
+        text.setText(str);
+    }
+
+    private String displayElement(ComboBox<String> box) {
+        if (box.getValue() != null) {
+            return box.getValue();
+        } else {
+            return "";
+        }
+    }
+
+    private void addElement(ComboBox<String> box, int index) {
+        if (box.getValue() != null) {
+            if((index & 1) == 0){
+                chosenElements[index] = "'" + box.getValue() + "'";
+            } else{
+                chosenElements[index] = db.unparseDate(box.getValue());
+            }
+        }
+    }
+
+    private void displayVoyages() {
+        ArrayList<String> temp = db.getData(chosenElements);
+        for(String s: temp){
+            System.out.println(s);
+        }
+    }
+
     public static void main(String[] args) {
         launch(args);
+    }
+}
+
+class Section {
+    DB db = new DB();
+
+    Label titleLabel = new Label();
+    Label dateLabel = new Label();
+    Label localLabel = new Label();
+    ComboBox<String> dateComboBox = new ComboBox<>();
+    ComboBox<String> localComboBox = new ComboBox<>();
+    VBox localVBox;
+    VBox dateVBox;
+    HBox contentHBox;
+    VBox fullVBox;
+
+    public Section(String title) {
+        titleLabel.setText(title);
+        titleLabel.setPrefHeight(70);
+        titleLabel.setPrefWidth(140);
+        dateLabel.setText("Date");
+        localLabel.setText("Location");
+        for (Integer i : db.startDateArr) {
+            dateComboBox.getItems().add(db.parseDate(i));
+        }
+        for (String s : db.localArr) {
+            localComboBox.getItems().add(s);
+        }
+        dateVBox = new VBox(dateLabel, dateComboBox);
+        localVBox = new VBox(localLabel, localComboBox);
+        contentHBox = new HBox(dateVBox, localVBox);
+        fullVBox = new VBox(titleLabel, contentHBox);
     }
 }

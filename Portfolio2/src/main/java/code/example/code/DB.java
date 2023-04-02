@@ -13,32 +13,29 @@ public class DB {
     ArrayList<String> companyNmArr = new ArrayList<String>();
     ArrayList<String> localArr = new ArrayList<String>();
 
-    public DB() {
-        Connection conn;
+    final String url = "jdbc:sqlite:identifier.sqlite";
 
+    Connection conn = null;
+
+    public DB() {
         try {
-            final String url = "jdbc:sqlite:identifier.sqlite";
             conn = DriverManager.getConnection(url);
             System.out.println("connected to database");
 
-            final String startDateQuery = "select distinct startDate from voyage order by startDate asc";
-            final String endDateQuery = "select distinct endDate from voyage order by endDate asc";
-            final String companyNmQuery = "select distinct companyName from voyage order by companyName asc";
-            final String localQuery = "select distinct startLocal from voyage order by startLocal asc";
-
-            createListFromQuery(conn, startDateQuery, "startDate");
-            createListFromQuery(conn, endDateQuery, "endDate");
-            createListFromQuery(conn, companyNmQuery, "companyNm");
-            createListFromQuery(conn, localQuery, "local");
-
-            //System.out.println(startDateArr);
-            //System.out.println(endDateArr);
-            //System.out.println(companyNmArr);
-            //System.out.println(localArr);
+            createListFromQuery(conn, getIniQuery("startDate"), "startDate");
+            createListFromQuery(conn, getIniQuery("endDate"), "endDate");
+            createListFromQuery(conn, getIniQuery("companyName"), "companyNm");
+            createListFromQuery(conn, getIniQuery("startLocal"), "local");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        } finally {
+            if (conn != null) conn = null;
         }
+    }
+
+    private String getIniQuery(String column) {
+        return "select distinct " + column + " from voyage order by " + column + " asc";
     }
 
     public String parseDate(int num) {
@@ -48,15 +45,15 @@ public class DB {
         for (int i = 0; i < str.length(); i++) {
             count++;
 
-            if(count == 2 && i != str.length()-1){
+            if (count == 2 && i != str.length() - 1) {
                 String start = "";
                 String end = "";
 
-                for(int i2 = 0; i2 <= i; i2++){
+                for (int i2 = 0; i2 <= i; i2++) {
                     start = start + str.charAt(i2);
                 }
 
-                for(int i3 = i+1; i3 < str.length(); i3++){
+                for (int i3 = i + 1; i3 < str.length(); i3++) {
                     end = end + str.charAt(i3);
                 }
 
@@ -65,6 +62,76 @@ public class DB {
             }
         }
         return str;
+    }
+
+    public String unparseDate(String date) {
+        if (date != null) {
+            return date.replaceAll("/", "");
+        } else {
+            return "";
+        }
+    }
+
+    public ArrayList<String> getData(String[] chosenElements) {
+        ArrayList<String> out = new ArrayList<>();
+        String query = "SELECT * from voyage ";
+
+        int count = 0;
+
+        String[] refIdx = {"startLocal", "startDate", "endLocal", "endDate"};
+
+        for (int i = 0; i < chosenElements.length; i++) {
+            if (chosenElements[i] != null) {
+                query += queryCounter(count) + refIdx[i] + " = " + chosenElements[i];
+                count++;
+            }
+        }
+        System.out.println(query);
+
+        try {
+            conn = DriverManager.getConnection(url);
+            System.out.println("connected to database");
+
+            try (Statement stmt = conn.createStatement()) {
+                ResultSet rs = stmt.executeQuery(query);
+
+                while (rs.next()) {
+                    String str = "";
+                    for (int i = 1; i <= 5; i++) {
+                        str += getVoyageString(rs.getString(i),i);
+                    }
+                    out.add(str);
+                }
+
+            } catch (SQLException e) {
+                throw new Error("problem", e);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn != null) conn = null;
+        }
+
+        return out;
+    }
+
+    private String getVoyageString(String in, int index) {
+        return switch (index) {
+            case 1 -> "Departure Date: " + parseDate(Integer.parseInt(in)) + ", ";
+            case 2 -> "Arrival Date: " + parseDate(Integer.parseInt(in)) + ", ";
+            case 3 -> "Company Name: " + in + ", ";
+            case 4 -> "Departure Location: " + in + ", ";
+            case 5 -> "Arrival Location: " + in + ", ";
+            default -> "";
+        };
+    }
+
+    private String queryCounter(int count) {
+        if (count == 0) {
+            return "where ";
+        } else {
+            return " AND ";
+        }
     }
 
     private void createListFromQuery(Connection conn, String query, String type) {
@@ -101,25 +168,4 @@ public class DB {
             throw new Error("problem", e);
         }
     }
-
-    /*
-    private boolean checkUniqueEntry(ArrayList<String> array, String name) {
-        for (String s : array) {
-            if (name.equals(s)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean checkUniqueEntry(ArrayList<Integer> array, int num) {
-        for (Integer i : array) {
-            if (num == i) {
-                return false;
-            }
-        }
-        return true;
-    }
-     */
-
 }
