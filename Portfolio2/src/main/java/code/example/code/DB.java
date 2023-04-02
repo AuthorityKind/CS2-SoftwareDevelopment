@@ -1,17 +1,14 @@
 package code.example.code;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class DB {
-    ArrayList<Integer> startDateArr = new ArrayList<Integer>();
-    ArrayList<Integer> endDateArr = new ArrayList<Integer>();
-    ArrayList<String> companyNmArr = new ArrayList<String>();
-    ArrayList<String> localArr = new ArrayList<String>();
+    //These are used for the GUI, for the user to be able to see the various options
+    ArrayList<Integer> departDateArr = new ArrayList<>();
+    ArrayList<Integer> arrivalDateArr = new ArrayList<>();
+    ArrayList<String> companyNameArr = new ArrayList<>();
+    ArrayList<String> localArr = new ArrayList<>();
 
     final String url = "jdbc:sqlite:identifier.sqlite";
 
@@ -22,10 +19,10 @@ public class DB {
             conn = DriverManager.getConnection(url);
             System.out.println("connected to database");
 
-            createListFromQuery(conn, getIniQuery("startDate"), "startDate");
-            createListFromQuery(conn, getIniQuery("endDate"), "endDate");
-            createListFromQuery(conn, getIniQuery("companyName"), "companyNm");
-            createListFromQuery(conn, getIniQuery("startLocal"), "local");
+            createListFromQuery(conn, getIniQuery("departDate"), "departDate");
+            createListFromQuery(conn, getIniQuery("arrivalDate"), "arrivalDate");
+            createListFromQuery(conn, getIniQuery("companyName"), "companyName");
+            createListFromQuery(conn, getIniQuery("departLocal"), "local");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -34,10 +31,13 @@ public class DB {
         }
     }
 
+    //returns the query needed for the list initialization
     private String getIniQuery(String column) {
         return "select distinct " + column + " from voyage order by " + column + " asc";
     }
 
+    //parseDate() and unparseDate() is used to make the date either more readable for the user or
+    //compatible with the database's values
     public String parseDate(int num) {
         String str = String.valueOf(num);
 
@@ -72,17 +72,24 @@ public class DB {
         }
     }
 
+    //getData() is used when creating the buttons for the booking
     public ArrayList<String> getData(String[] chosenElements) {
         ArrayList<String> out = new ArrayList<>();
         String query = "SELECT * from voyage ";
 
         int count = 0;
 
-        String[] refIdx = {"startLocal", "startDate", "endLocal", "endDate"};
+        String[] refIdx = {"departDate", "arrivalDate", "companyName", "departLocal", "arrivalLocal", "curCap",};
 
         for (int i = 0; i < chosenElements.length; i++) {
             if (chosenElements[i] != null) {
-                query += queryCounter(count) + refIdx[i] + " = " + chosenElements[i];
+                String sym = "";
+                switch (i) {
+                    case 0, 1, 2, 3, 4 -> sym = " = ";
+                    case 5 -> sym = " > ";
+                }
+
+                query += queryCounter(count) + refIdx[i] + sym + chosenElements[i];
                 count++;
             }
         }
@@ -97,8 +104,8 @@ public class DB {
 
                 while (rs.next()) {
                     String str = "";
-                    for (int i = 1; i <= 5; i++) {
-                        str += getVoyageString(rs.getString(i),i);
+                    for (int i = 1; i <= 7; i++) {
+                        str += getVoyageString(rs.getString(i), i);
                     }
                     out.add(str);
                 }
@@ -115,17 +122,81 @@ public class DB {
         return out;
     }
 
+    //this method is a messy copy of getData, but returns the query that the buttons that are pressed
+    //will run
+    public String getBookingQuery(String[] chosenElements) {
+        String out = "";
+        String query = "SELECT * from voyage ";
+
+        int count = 0;
+
+        String[] refIdx = {"departDate", "arrivalDate", "companyName", "departLocal", "arrivalLocal", "curCap",};
+
+        for (int i = 0; i < chosenElements.length; i++) {
+            if (chosenElements[i] != null) {
+                String sym = "";
+                switch (i) {
+                    case 0, 1, 2, 3, 4 -> sym = " = ";
+                    case 5 -> sym = " > ";
+                }
+
+                query += queryCounter(count) + refIdx[i] + sym + chosenElements[i];
+                count++;
+            }
+        }
+        System.out.println(query);
+
+        try {
+            conn = DriverManager.getConnection(url);
+            System.out.println("connected to database");
+
+            try (Statement stmt = conn.createStatement()) {
+                ResultSet rs = stmt.executeQuery(query);
+
+                while (rs.next()) {
+                    //The math is wrong, so what should be 25 + 3 ended up being 34
+                    int newCurCap = rs.getInt(7) + Integer.parseInt(chosenElements[5]);
+                    String outQuery = "UPDATE voyage SET curCap = " + newCurCap;
+                    //ArrayList<String> column = getColumns();
+
+                    outQuery += " WHERE departDate = " + rs.getInt(1);
+                    outQuery += " AND arrivalDate = " + rs.getInt(2);
+                    outQuery += " AND companyName = " + "'" + rs.getString(3) + "'";
+                    outQuery += " AND departLocal = " + "'" + rs.getString(4) + "'";
+                    outQuery += " AND arrivalLocal = " + "'" + rs.getString(5) + "'";
+                    outQuery += " AND maxCap = " + rs.getInt(6);
+                    outQuery += " AND curCap = " + rs.getInt(7);
+
+                    out = outQuery;
+                }
+
+            } catch (SQLException e) {
+                throw new Error("problem", e);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn != null) conn = null;
+        }
+
+        return out;
+    }
+
+    //messy way of formatting text from database to be more readable
     private String getVoyageString(String in, int index) {
         return switch (index) {
-            case 1 -> "Departure Date: " + parseDate(Integer.parseInt(in)) + ", ";
-            case 2 -> "Arrival Date: " + parseDate(Integer.parseInt(in)) + ", ";
-            case 3 -> "Company Name: " + in + ", ";
-            case 4 -> "Departure Location: " + in + ", ";
-            case 5 -> "Arrival Location: " + in + ", ";
+            case 1 -> "Departure Date: " + parseDate(Integer.parseInt(in)) + ",   ";
+            case 2 -> "Arrival Date: " + parseDate(Integer.parseInt(in)) + ",   ";
+            case 3 -> "Company Name: " + in + ",   \n";
+            case 4 -> "Departure Location: " + in + ",   ";
+            case 5 -> "Arrival Location: " + in + ",   ";
+            case 6 -> "Maximum Capacity: " + in + ",   ";
+            case 7 -> "Current Capacity: " + in;
             default -> "";
         };
     }
 
+    //very silly method used in getData() because I was tired and about to give up
     private String queryCounter(int count) {
         if (count == 0) {
             return "where ";
@@ -134,6 +205,25 @@ public class DB {
         }
     }
 
+    //executes a given query
+    public void runQuery(String query) {
+        try {
+            conn = DriverManager.getConnection(url);
+            System.out.println("connected to database");
+
+            try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+                System.out.println("Running: " + query);
+                pstmt.executeUpdate();
+
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn != null) conn = null;
+        }
+    }
+
+    //the method used to make those lists from the constructor
     private void createListFromQuery(Connection conn, String query, String type) {
         try (Statement stmt = conn.createStatement()) {
             ResultSet rs = stmt.executeQuery(query);
@@ -145,22 +235,22 @@ public class DB {
                         localArr.add(str);
                     }
                 }
-                case "startDate" -> {
+                case "departDate" -> {
                     while (rs.next()) {
                         int num = rs.getInt(1);
-                        startDateArr.add(num);
+                        departDateArr.add(num);
                     }
                 }
-                case "endDate" -> {
+                case "arrivalDate" -> {
                     while (rs.next()) {
                         int num = rs.getInt(1);
-                        endDateArr.add(num);
+                        arrivalDateArr.add(num);
                     }
                 }
-                case "companyNm" -> {
+                case "companyName" -> {
                     while (rs.next()) {
                         String str = rs.getString(1);
-                        companyNmArr.add(str);
+                        companyNameArr.add(str);
                     }
                 }
             }
