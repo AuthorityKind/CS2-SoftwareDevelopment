@@ -17,7 +17,7 @@ public class DB {
     public DB() {
         try {
             conn = DriverManager.getConnection(url);
-            System.out.println("connected to database");
+            System.out.println("DB Constructor: connected to database\n");
 
             createListFromQuery(conn, getIniQuery("departDate"), "departDate");
             createListFromQuery(conn, getIniQuery("arrivalDate"), "arrivalDate");
@@ -93,11 +93,11 @@ public class DB {
                 count++;
             }
         }
-        System.out.println(query);
+        System.out.println("Running: " + query);
 
         try {
             conn = DriverManager.getConnection(url);
-            System.out.println("connected to database");
+            System.out.println("getData(): connected to database\n");
 
             try (Statement stmt = conn.createStatement()) {
                 ResultSet rs = stmt.executeQuery(query);
@@ -144,11 +144,11 @@ public class DB {
                 count++;
             }
         }
-        System.out.println(query);
+        System.out.println("Running: " + query);
 
         try {
             conn = DriverManager.getConnection(url);
-            System.out.println("connected to database");
+            System.out.println("getBookingQuery(): connected to database\n");
 
             try (Statement stmt = conn.createStatement()) {
                 ResultSet rs = stmt.executeQuery(query);
@@ -209,7 +209,7 @@ public class DB {
     public void runQuery(String query) {
         try {
             conn = DriverManager.getConnection(url);
-            System.out.println("connected to database");
+            System.out.println("runQuery(): connected to database\n");
 
             try (PreparedStatement pstmt = conn.prepareStatement(query)) {
                 System.out.println("Running: " + query);
@@ -258,4 +258,71 @@ public class DB {
             throw new Error("problem", e);
         }
     }
+
+    //part 3 of the assignment
+    public ArrayList<String> verifyCapacity(){
+        ArrayList<String> out = new ArrayList<>();
+        String query = "SELECT * from voyage where maxCap < curCap";
+
+        try {
+            conn = DriverManager.getConnection(url);
+            System.out.println("verifyCapacity(): connected to database\n");
+
+            try (Statement stmt = conn.createStatement()) {
+                ResultSet rs = stmt.executeQuery(query);
+
+                while (rs.next()) {
+                    String str = "";
+                    for(int i = 1; i <= 7; i++){
+                        str += rs.getString(i) + " ";
+                    }
+                    out.add(str);
+                }
+
+            } catch (SQLException e) {
+                throw new Error("problem", e);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn != null) conn = null;
+        }
+        return out;
+    }
+
+    //part 4 of the assignment
+    public ArrayList<String> verifyVoyages(){
+        ArrayList<String> out = new ArrayList<>();
+        String query = "SELECT *, COUNT(*) AS \"Count\" from voyage group by departDate, arrivalDate, companyName, departLocal, arrivalLocal, maxCap, curCap;";
+
+        try {
+            conn = DriverManager.getConnection(url);
+            System.out.println("verifyVoyages(): connected to database\n");
+
+            try (Statement stmt = conn.createStatement()) {
+                ResultSet rs = stmt.executeQuery(query);
+
+                while (rs.next()) {
+                    if(rs.getInt(8) > 1){
+                        String str = "";
+                        for(int i = 1; i <= 7; i++){
+                            str += rs.getString(i) + " ";
+                        }
+                        out.add(str);
+                    }
+                }
+            } catch (SQLException e) {
+                throw new Error("problem", e);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn != null) conn = null;
+        }
+        return out;
+    }
+
+
+
 }
+

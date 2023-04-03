@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
 import java.util.ArrayList;
 
 public class Main extends Application {
@@ -35,12 +36,16 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
+        checkCapacity();
+        checkOverlappingVoyages();
+
         int width = 1200;
         int height = 800;
 
         //INITIALIZATION
         VBox voyageGUI = new VBox();
         VBox volumeGUI;
+
 
         //VOLUME
         Label volumeText = new Label("Volume");
@@ -167,6 +172,30 @@ public class Main extends Application {
         Button tempBut = new Button(str);
         tempBut.setOnAction(bookEvent);
         return tempBut;
+    }
+
+    //runs and prints the result for part 3 of the assignment
+    private void checkCapacity(){
+        ArrayList<String> capacityList = db.verifyCapacity();
+        if(capacityList.isEmpty()){
+            System.out.println("No ship exceeds their capacity\n");
+        } else{
+            for(String s: capacityList){
+                System.out.println(s);
+            }
+        }
+    }
+
+    //runs and prints the result for part 4 of the assignment
+    private void checkOverlappingVoyages(){
+        ArrayList<String> capacityList = db.verifyVoyages();
+        if(capacityList.isEmpty()){
+            System.out.println("No voyage overlaps\n");
+        } else{
+            for(String s: capacityList){
+                System.out.println(s);
+            }
+        }
     }
 
     public static void main(String[] args) {
