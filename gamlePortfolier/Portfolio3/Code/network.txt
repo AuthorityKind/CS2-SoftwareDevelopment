@@ -1,0 +1,52 @@
+Laem Chabang,Bangkok,1
+Bangkok,Laem Chabang,1
+Laem Chabang,Hong Kong,5
+Hong Kong,Nansha New Port,1
+Nansha New Port,Tokyo,5
+Tokyo,Yokohama,1
+Yokohama,Nagoya,1
+Nagoya,Kobe,1
+Kobe,Hakata,2
+Kaohsiung,Keelung,2
+Keelung,Nansha New Port,2
+Nansha New Port,Yantian,1
+Yantian,Hong Kong,1
+Hong Kong,Chittagong,9
+Tokyo,Yokohama,1
+Yokohama,Nagoya,1
+Nagoya,Kobe,1
+Kobe,Hakata,2
+Hakata,Yantian,4
+Yantian,Hong Kong,1
+Hong Kong,Laem Chabang,5
+Laem Chabang,Bangkok,1
+Bangkok,Laem Chabang,1
+Shanghai,Dalian,4
+Dalian,Xingang,2
+Xingang,Qingdao,3
+Qingdao,Keelung,3
+Keelung,Singapore,6
+Singapore,Tanjung Pelepas,2
+Tanjung Pelepas,Jakarta,3
+Jakarta,Surabaya,2
+Chittagong,Tanjung Pelepas,8
+Tanjung Pelepas,Singapore,2
+Singapore,Laem Chabang,4
+Laem Chabang,Ningbo,1
+Ningbo,Shanghai,0
+Chittagong,Singapore,8
+Singapore,Tanjung Pelepas,2
+Tanjung Pelepas,Keelung,7
+Keelung,Kaohsiung,2
+Kaohsiung,Hong Kong,2
+Hong Kong,Haiphong,3
+Haiphong,Hong Kong,3
+Hong Kong,Kaohsiung,2
+Kaohsiung,Keelung,2
+Ningbo,Nansha New Port,4
+Nansha New Port,Tanjung Pelepas,4
+Tanjung Pelepas,Mombasa,13
+Mombasa,Dar es Salaam,5
+Dar es Salaam,Tanjung Pelepas,13
+Tanjung Pelepas,Laem Chabang,3
+Laem Chabang,Ningbo,1

@@ -43,7 +43,7 @@ Hong Kong,Haiphong,3
 Haiphong,Hong Kong,3
 Hong Kong,Kaohsiung,2
 Kaohsiung,Keelung,2
-Ningbo ,Nansha New Port,4
+Ningbo,Nansha New Port,4
 Nansha New Port,Tanjung Pelepas,4
 Tanjung Pelepas,Mombasa,13
 Mombasa,Dar es Salaam,5

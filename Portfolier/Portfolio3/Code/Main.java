@@ -16,8 +16,8 @@ public class Main {
     public static void main(String[] args) {
         readFile();
         g.visitDepthFirst(g.vertex("Hong Kong"), new HashSet<Vertex>());
-        System.out.println();
-        g.visitBreadthFirst(g.vertex("Singapore"));
+        //System.out.println();
+        //g.visitBreadthFirst(g.vertex("Singapore"));
         System.out.println();
         minimumSpanningTree();
     }
@@ -45,7 +45,7 @@ public class Main {
             totalLength += e.weight;
         }  
         System.out.println("Total Length of the mst is: " + totalLength);
-    }
+    }   
 }
 
 abstract class Graph {
@@ -69,13 +69,31 @@ abstract class Graph {
 
     abstract Collection<Edge> outEdge(Vertex v);
 
-    void visitDepthFirst(Vertex v, Set<Vertex> visited) {
+    HashSet<Vertex> getLocations(){
+        HashSet<Vertex> locations = new HashSet<>();
+        for (Edge e: edges()){
+            if(!locations.contains(e.to)){
+                locations.add(e.to);
+            }
+            if(!locations.contains(e.from)){
+                locations.add(e.from);
+            }
+        }
+        return locations;
+    }
+
+    boolean checkRemainingLocations(HashSet<Vertex> visitedVertices){
+        //part 2
+        return getLocations().equals(visitedVertices);
+    }
+
+    void visitDepthFirst(Vertex v, HashSet<Vertex> visited) {
         if (visited.contains(v))
             return;
-        System.out.println("visited " + v);
+        System.out.println("Visited " + v);
         visited.add(v);
-        for (Edge e : outEdge(v))
-            visitDepthFirst(e.to, visited);
+        for (Edge e : outEdge(v)) visitDepthFirst(e.to, visited);
+        if(checkRemainingLocations(visited)) System.out.println("All locations visited!");
     }
 
     void visitBreadthFirst(Vertex v) {
