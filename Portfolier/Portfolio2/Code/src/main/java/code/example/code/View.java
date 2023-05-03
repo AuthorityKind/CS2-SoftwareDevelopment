@@ -17,9 +17,7 @@ import java.util.ArrayList;
 public class View {
     Section departure = new Section("Departure");
     Section arrival = new Section("Arrival");
-
     ArrayList<QueryValue> chosenElements = new ArrayList<>();
-
     Label chosenText = new Label("""
             Departure Date:\s
             Arrival Date:\s
@@ -27,8 +25,8 @@ public class View {
             Arrival Location:\s
             Volume of Containers:\s"""
             );
-
     TextField volumeField = new TextField();
+    VBox voyageGUI = new VBox();
 
     //the "main" method of the view class, running the window, and it's content
     //functions as the backbone of the program
@@ -41,9 +39,7 @@ public class View {
         int height = 800;
 
         //INITIALIZATION
-        VBox voyageGUI = new VBox();
         VBox volumeGUI;
-
 
         //VOLUME
         Label volumeText = new Label("Volume");
@@ -62,7 +58,7 @@ public class View {
         //SEARCH BUTTON
         Button searchButton = new Button("Search");
         searchButton.prefHeight(100);
-        EventHandler<ActionEvent> searchEvent = actionEvent -> displayVoyages(voyageGUI);
+        EventHandler<ActionEvent> searchEvent = actionEvent -> displayVoyages();
         searchButton.setOnAction(searchEvent);
 
 
@@ -84,7 +80,7 @@ public class View {
 
 
         //STAGE
-        stage.setTitle("title");
+        stage.setTitle("Booking program");
         stage.setScene(scene);
         stage.show();
     }
@@ -93,7 +89,7 @@ public class View {
     //to give a visual feedback of what's going on to the user
     //takes the selected data from the interactive UI and adds it to the chosenElements array and displays the info as well
     public void displayChosenElements() {
-        String str = "Chosen Elements \n" +
+        String str = "Chosen Elements" +
                 "\nDeparture Date: " + displayElement(departure.dateComboBox.getValue()) +
                 "\nArrival Date: " + displayElement(arrival.dateComboBox.getValue()) +
                 "\nDeparture Location: " + displayElement(departure.localComboBox.getValue()) +
@@ -113,7 +109,7 @@ public class View {
     //used to insure a valid element to display
     //checks of the input meets the criteria
     private String displayElement(String box) {
-        if (box != null && !box.equals("") && box.matches("-?\\d+")) {
+        if (box != null && !box.equals("")) {
             return box;
         } else {
             return "";
@@ -124,11 +120,12 @@ public class View {
     //depending on the input type, it is formatted different, which is needed for querying
     public void addElement(String box, String type) {
         if(box != null){
+            chosenElements.removeIf(qval -> qval.type.equals(type));
             String val;
-            switch (type){
+            switch (type) {
                 case "departDate", "arrivalDate" -> val = Controller.unparseDate(box);
                 case "curCap" -> val = box;
-                default -> val = "'" + box + "'";
+                default -> val = "'" + box.substring(0, box.length()-1) + "'";
             }
             chosenElements.add(new QueryValue(val, type));
         }
@@ -136,19 +133,19 @@ public class View {
 
     //displays all matching shipments with what was searched for
     //uses the selected elements as points to add to the query
-    private void displayVoyages(VBox vbox) {
-        vbox.getChildren().clear();
+    private void displayVoyages() {
+        voyageGUI.getChildren().clear();
         String[] temp = Controller.getData(chosenElements.toArray(QueryValue[]::new));
         for (String s : temp) {
-            addBooking(vbox, s, Controller.getBookingQuery(chosenElements.toArray(QueryValue[]::new)));
+            addBooking(s, Controller.getBookingQuery(chosenElements.toArray(QueryValue[]::new)));
         }
     }
 
     //a method that adds a button for each possible booking
     //is done so to fluently add all possible shipments to the screen
     //adds a "child" to the selected VBox with the getBookingButton method
-    private void addBooking(VBox vbox, String str, String bookQuery) {
-        vbox.getChildren().add(getBookingButton(str, bookQuery));
+    private void addBooking(String str, String bookQuery) {
+        voyageGUI.getChildren().add(getBookingButton(str, bookQuery));
     }
 
     //creates and returns a button that books a specific shipment, based on the parameters it was given

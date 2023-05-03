@@ -24,7 +24,7 @@ public class Tanker extends Vessel {
             if (tankerCargo == null)
                 totalCapacity++;
         final int mod = 100;
-        double out = totalCapacity * mod / capacity;
+        double out = totalCapacity * mod / cargo.length;
         return out / mod;
     }
 }

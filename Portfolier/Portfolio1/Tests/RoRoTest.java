@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-public class RoRoTest extends VesselTest {
+public class RoRoTest{
   int lanes;
   int laneLength;
   ArrayList<Vehicle> cargo = new ArrayList<>();
@@ -13,8 +13,7 @@ public class RoRoTest extends VesselTest {
   }
 
   @Test
-  @Override
-  public void loadingCargo() {
+  public void loadingCargoTest() {
     int lane = 2;
     String vehicle = "Car";
     if(!checkLaneCap(lane)){
@@ -25,8 +24,7 @@ public class RoRoTest extends VesselTest {
   }
 
   @Test
-  @Override
-  public void loadingFraction() {
+  public void loadingFractionTest() {
     int totalLaneCap = 0;
     for (int i = 0; i < lanes; i++)
       totalLaneCap += getCapacity(i + 1);
@@ -65,6 +63,7 @@ public class RoRoTest extends VesselTest {
         laneCap += vehicle.length;
     return laneLength - laneCap;
   }
+
 }
 
 class Vehicle{

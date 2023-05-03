@@ -1,28 +1,32 @@
 import org.junit.Test;
 
-public class TankerTest extends VesselTest {
+public class TankerTest {
     int capacity;
     TankerCargo[] cargo = new TankerCargo[10];
 
     public TankerTest() {
-        capacity = 20;
+        Integer capacity = 20;
+        if (capacity instanceof Integer) {
+            this.capacity = (int) capacity;
+        } else {
+            throw new IllegalArgumentException("Argument was null!");
+        }
     }
 
-    @Test
-    @Override
-    public void loadingCargo() {
-        int compartment = 4;
-        String volume = "6";
-        if (cargo[compartment] == null) {
-            cargo[compartment] = new TankerCargo(compartment, volume);
+    public void loadingCargoTest(Object compartment, Object volume) {
+        if ((compartment instanceof Integer) && (volume instanceof String)) {
+            if (cargo[(int) compartment] == null) {
+                cargo[(int) compartment] = new TankerCargo((int) compartment, volume.toString());
+            } else {
+                System.err.println("Compartment " + compartment + " is full, cannot add tanker cargo");
+            }
         } else {
-            System.err.println("Compartment " + compartment + " is full, cannot add tanker cargo");
+            throw new IllegalArgumentException("Argument was invalid!");
         }
     }
 
     @Test
-    @Override
-    public void loadingFraction() {
+    public void loadingFractionTest() {
         int totalCapacity = 0;
         for (TankerCargo tankerCargo : cargo)
             if (tankerCargo == null)
@@ -33,12 +37,12 @@ public class TankerTest extends VesselTest {
     }
 }
 
-class TankerCargo{
-	public int compartment;
-	public String volume;
+class TankerCargo {
+    public int compartment;
+    public String volume;
 
-	public TankerCargo(int compartment, String volume){
-		this.compartment = compartment;
-		this.volume = volume;
-	}
+    public TankerCargo(int compartment, String volume) {
+        this.compartment = compartment;
+        this.volume = volume;
+    }
 }

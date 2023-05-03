@@ -11,9 +11,8 @@ public class ContainerVessel extends Vessel{
 
   @Override
   public void loadingCargo(int numOfContainers, String teu) {
-    if((numOfContainers + getCapacity())<= capacity){
+    if((numOfContainers + getCapacity())<= capacity)
       cargo.add(new Container(numOfContainers, "TEU"));
-    }
   }
 
   @Override
@@ -23,17 +22,16 @@ public class ContainerVessel extends Vessel{
     return out/mod;
   }
 
+  //returns the number of containers it currently holds.
   private int getCapacity(){
     if(!cargo.isEmpty()){
       int totalCapacity = 0;
-      for (Container container: cargo){
+      for (Container container: cargo)
         totalCapacity += container.numOfContainers;
-      }
       return totalCapacity;
     }
     return 0;
-  }
-  
+  }  
 }
 
 class Container{

@@ -4,8 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class Model {
-    static final String url = "jdbc:sqlite:identifier.sqlite";
-
+    private static final String url = "jdbc:sqlite:identifier.sqlite";
     static Connection conn = null;
 
     //runs a query that the function is given
@@ -17,7 +16,6 @@ public class Model {
             try (PreparedStatement pstmt = conn.prepareStatement(query)) {
                 System.out.println("Running: " + query);
                 pstmt.executeUpdate();
-
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -35,36 +33,12 @@ public class Model {
             conn = DriverManager.getConnection(url);
             try (Statement stmt = conn.createStatement()) {
                 ResultSet rs = stmt.executeQuery(query);
-
                 while (rs.next()) {
                     StringBuilder str = new StringBuilder();
                     for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++)
                         str.append(rs.getString(i)).append(" ");
                     temp.add(str.toString());
                 }
-            } catch (SQLException e) {
-                throw new Error("problem", e);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            if (conn != null) conn = null;
-        }
-        return temp.toArray(String[]::new);
-    }
-
-    //overloads the retrieveData method to take an additional parameter, which is a string
-    //meant for cases where only one column is needed
-    public static String[] retrieveData(String query, String column) {
-        ArrayList<String> temp = new ArrayList<>();
-
-        try {
-            conn = DriverManager.getConnection(url);
-            try (Statement stmt = conn.createStatement()) {
-                ResultSet rs = stmt.executeQuery(query);
-                while (rs.next())
-                    temp.add(rs.getString(column));
-
             } catch (SQLException e) {
                 throw new Error("problem", e);
             }
@@ -85,7 +59,6 @@ public class Model {
             conn = DriverManager.getConnection(url);
             try (Statement stmt = conn.createStatement()) {
                 ResultSet rs = stmt.executeQuery(query);
-
                 while (rs.next()) {
                     int newCurCap = 0;
                     for (QueryValue qval : queryValues)
@@ -93,7 +66,6 @@ public class Model {
                             newCurCap = rs.getInt("curCap") + Integer.parseInt(qval.val);
                             break;
                         }
-
                     out = "UPDATE voyage SET curCap = " + newCurCap +
                             " WHERE departDate = " + rs.getInt("departDate")
                             + " AND arrivalDate = " + rs.getInt("arrivalDate")

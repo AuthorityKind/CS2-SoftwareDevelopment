@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-public class ContainerVesselTest extends VesselTest {
+public class ContainerVesselTest {
   int capacity;
   ArrayList<Container> cargo = new ArrayList<>();
 
@@ -11,8 +11,7 @@ public class ContainerVesselTest extends VesselTest {
   }
 
   @Test
-  @Override
-  public void loadingCargo() {
+  public void loadingCargoTest() {
     int numOfContainers = 10;
     if ((numOfContainers + getCapacity(true)) <= capacity) {
       cargo.add(new Container(numOfContainers, "TEU"));
@@ -20,8 +19,7 @@ public class ContainerVesselTest extends VesselTest {
   }
 
   @Test
-  @Override
-  public void loadingFraction() {
+  public void loadingFractionTest() {
     final int mod = 1000;
     double out = getCapacity(true) * mod / capacity;
     System.out.println(out / mod);

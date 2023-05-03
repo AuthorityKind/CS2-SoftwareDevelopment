@@ -18,6 +18,7 @@ public class Controller {
 
     //runs the runQuery method from the Model class
     public static void runQuery(String query) {
+        System.out.println("Booking Query: " + query);
         Model.runQuery(query);
     }
 
@@ -25,18 +26,18 @@ public class Controller {
     //meant to make dates more readable for the user
     //knowing every two digits are paired up, the method goes through the characters and add a "/" between each pair
     public static String parseDate(String date) {
+        int biggerCount = 0; //this is a moronic workaround, I just needed it to work and it does so who cares
         int count = 0;
         for (int i = 0; i < date.length(); i++) {
             count++;
-
-            if (count == 2 && i != date.length() - 1) {
+            if (count == 2 && i != date.length() - 1 && biggerCount < 2) {
                 StringBuilder start = new StringBuilder();
                 StringBuilder end = new StringBuilder();
-
                 for (int i2 = 0; i2 <= i; i2++) start.append(date.charAt(i2));
                 for (int i3 = i + 1; i3 < date.length(); i3++) end.append(date.charAt(i3));
                 date = start + "/" + end;
                 count = -1;
+                biggerCount++;
             }
         }
         return date;
@@ -66,7 +67,6 @@ public class Controller {
     private static String getQuery(QueryValue[] queryValues) {
         StringBuilder query = new StringBuilder("SELECT * from voyage ");
         boolean firstCounted = false;
-
         for (QueryValue qval : queryValues) {
             if (!firstCounted) {
                 query.append("WHERE ");
@@ -95,9 +95,9 @@ public class Controller {
     //to ensure that there isn't any mistakes or managerial hiccups
     //counts the number of instances of each row with and returns that number for each row
     public static void checkOverlappingVoyages() {
-        String[] capacityList = Model.retrieveData("SELECT *, COUNT(*) AS \"Count\" from voyage group by departDate, arrivalDate, companyName, departLocal, arrivalLocal, maxCap, curCap;", "Count");
+        String[] capacityList = Model.retrieveData("SELECT COUNT(*) AS \"Count\" from voyage group by departDate, arrivalDate, companyName, departLocal, arrivalLocal, maxCap, curCap;");
         for(String s : capacityList)
-            if(!s.equals("1")){
+            if(!s.equals("1 ")){
                 System.out.println("A voyage is overlapping");
                 return;
             }
